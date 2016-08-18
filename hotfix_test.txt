@@ -1,7 +1,5 @@
 hotfix record
 hotfix2 record
 dev1 record
-<<<<<<< HEAD
-=======
 dev2 record
->>>>>>> dev2
+dev1 record2
