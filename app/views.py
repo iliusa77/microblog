@@ -5,6 +5,17 @@ from .forms import LoginForm, EditForm
 from models import User, ROLE_ADMIN, ROLE_USER
 from datetime import datetime
 
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def not_found_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
+
+
+
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -47,7 +58,10 @@ def after_login(resp):
     if resp.email is None or resp.email == "":
         flash('Invalid login. Please try again.')
         return redirect(url_for('login'))
-    user = User.query.filter_by(email = resp.email).first()
+    user = User.query.filter_by(email=resp.email).first()
+    print(user)
+    print(resp)
+
     if user is None:
         nickname = resp.nickname
         if nickname is None or nickname == "":
@@ -59,7 +73,7 @@ def after_login(resp):
     if 'remember_me' in session:
         remember_me = session['remember me']
         session.pop('remember_me', None)
-    login_user(user, remember = remember_me)
+    login_user(user, remember=remember_me)
     return redirect(request.args.get('next') or url_for('index'))
 
 @app.before_request
